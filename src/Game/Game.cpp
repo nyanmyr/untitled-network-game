@@ -21,6 +21,13 @@ const std::string FONT_FILEPATH = RESOURCES_PATH "arial.ttf";
 
 const int PORT_NUMBER = 17316;
 
+enum class PacketType : uint8_t
+{
+	ASSIGN_PLAYER_ID = 1,
+	START_GAME = 2,
+	PLAYER_STATE = 3
+};
+
 void main()
 {
 	std::vector< std::pair<uint8_t, std::unique_ptr<sf::TcpSocket>> > connections;
@@ -62,11 +69,30 @@ void main()
 				std::cout << "Player " << static_cast<int>(playerId) << " connected!" << "\n";
 			}
 
-			if (connections.size() == 2)
+			if (connections.size() != 2)
 			{
-				std::cout << "Lobby full! Starting game..." << "\n";
-				break;
+				continue;
 			}
+
+			for (auto& [id, socket] : connections)
+			{
+				sf::Packet idPacket;
+				idPacket << static_cast<uint8_t>(PacketType::ASSIGN_PLAYER_ID) << static_cast<uint8_t>(id);
+				
+				if (socket->send(idPacket) != sf::Socket::Status::Done)
+				{
+					std::cerr << "Error: Failed to send ID to Player " << static_cast<int>(id) << "\n";
+				}
+
+				sf::Packet startPacket;
+				startPacket << static_cast<uint8_t>(PacketType::START_GAME);
+				if (socket->send(startPacket) != sf::Socket::Status::Done)
+				{
+					std::cerr << "Error: Failed to send Start signal to Player " << static_cast<int>(id) << "\n";
+				}
+			}
+
+			std::cout << "Lobby full! Starting game..." << "\n";
 		}
 		else if (role == 'c')
 		{
@@ -86,9 +112,45 @@ void main()
 			}
 
 			hostPlayer->setBlocking(false);
-			connections.push_back(std::make_pair(1, std::move(hostPlayer)));
 
 			std::cout << "Connected to host!" << "\n";
+
+			uint8_t myPlayerID = 0;
+			bool gameStarted = false;
+
+			std::cout << "Waiting for host to start the game..." << "\n";
+
+			while (!gameStarted)
+			{
+				sf::Packet packet;
+
+				if (hostPlayer->receive(packet) == sf::Socket::Status::Done)
+				{
+					uint8_t rawType;
+					if (packet >> rawType)
+					{
+						auto type = static_cast<PacketType>(rawType);
+
+						if (type == PacketType::ASSIGN_PLAYER_ID)
+						{
+							uint8_t assignedID;
+							packet >> assignedID;
+							myPlayerID = assignedID;
+							std::cout << "Assigned Player ID: " << static_cast<int>(myPlayerID) << "\n";
+						}
+						else if (type == PacketType::START_GAME)
+						{
+							gameStarted = true;
+							std::cout << "Host started the game!" << "\n";
+						}
+					}
+				}
+
+				sf::sleep(sf::milliseconds(10));
+			}
+
+			connections.push_back(std::make_pair(1, std::move(hostPlayer)));
+
 			break;
 		}
 	}
@@ -121,5 +183,5 @@ void main()
 		throw std::runtime_error("Font not found.");
 	}
 
-	playScene(window, Scene::MENU, font);
+	playScene(window, Scene::PLAYING, font);
 }
