@@ -82,7 +82,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     SFML::Window 
     SFML::System 
     SFML::Audio 
-    # SFML::Network
+    SFML::Network
 )
 
 # --- IDE Integration ---

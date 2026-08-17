@@ -23,8 +23,8 @@ void Start::setTextOrigin()
     auto& texts = systemsNC.getComponentArray<CText>();
     auto& transforms = systemsNC.getComponentArray<CTransform>();
 
-    double offsetX;
-    double offsetY;
+    float offsetX;
+    float offsetY;
 
     for (auto& [entity, text] : texts->getAll())
     {
