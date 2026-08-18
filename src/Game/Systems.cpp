@@ -417,36 +417,6 @@ void Update::doButtons
         }
     }
 }
-void Update::doNextScene
-(
-    sf::RenderWindow& window,
-    sf::Font& font
-)
-{
-    auto& nextScenes = systemsNC.getComponentArray<CNextScene>();
-
-    bool playNext = false;
-    Scene playNextScene;
-
-    for (auto& [entity, nextScene] : nextScenes->getAll())
-    {
-        // buttons must have a shape, origin, and text
-        if (nextScene.active)
-        {
-            //std::cout << "active: " << nextScene.next << "\n";
-            playNext = true;
-            playNextScene = nextScene.next;
-            break;
-        }
-    }
-
-    if (playNext)
-    {
-        systemsNC.destroyAll();
-        playScene(window, playNextScene, font);
-        window.close();
-    }
-}
 void Update::move(const DeltaTime dt)
 {
     auto& velocities = systemsNC.getComponentArray<CVelocity>();

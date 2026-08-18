@@ -77,11 +77,6 @@ void MenuScene(sf::RenderWindow& window, sf::Font& font) {
 			},
 			dt
 		);
-		Update::doNextScene
-		(
-			window,
-			font
-		);
 
 		window.clear();
 		// render systems

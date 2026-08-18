@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <optional>
 #include <memory>
+#include <unordered_map>
 
 using sf::RenderWindow;
 using sf::VideoMode;
@@ -28,9 +29,16 @@ enum class PacketType : uint8_t
 	PLAYER_STATE = 3
 };
 
+// TODO: delete menu scene
+// TODO: player controls
+// TOOD: borders
+// TODO: hearts display
+// TODO: hit player and lose a heart
+// TODO: score system
+
 void main()
 {
-	std::vector< std::pair<uint8_t, std::unique_ptr<sf::TcpSocket>> > connections;
+	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>> connections;
 	bool isHost = false;
 
 	while (true)
@@ -51,7 +59,6 @@ void main()
 			}
 
 			std::cout << "Hosting!" << "\n";
-			std::cout << "Waiting for player2 to connect to port " << std::to_string(PORT_NUMBER) << "..." << "\n";
 
 			for (uint8_t playerId = 2; playerId <= 3; ++playerId)
 			{
@@ -65,7 +72,7 @@ void main()
 				}
 
 				newPlayer->setBlocking(false);
-				connections.push_back({ playerId, std::move(newPlayer) });
+				connections[playerId] = std::move(newPlayer);
 				std::cout << "Player " << static_cast<int>(playerId) << " connected!" << "\n";
 			}
 
@@ -93,6 +100,7 @@ void main()
 			}
 
 			std::cout << "Lobby full! Starting game..." << "\n";
+			break;
 		}
 		else if (role == 'c')
 		{
@@ -149,8 +157,7 @@ void main()
 				sf::sleep(sf::milliseconds(10));
 			}
 
-			connections.push_back(std::make_pair(1, std::move(hostPlayer)));
-
+			connections[myPlayerID] = std::move(hostPlayer);
 			break;
 		}
 	}
@@ -183,5 +190,5 @@ void main()
 		throw std::runtime_error("Font not found.");
 	}
 
-	playScene(window, Scene::PLAYING, font);
+	playScene(window, Scene::PLAYING, font, connections);
 }

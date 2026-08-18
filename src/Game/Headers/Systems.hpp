@@ -36,7 +36,6 @@ namespace Update
 		const sf::Vector2i mouseVector,
 		const DeltaTime dt
 	);
-	void doNextScene(sf::RenderWindow& window, sf::Font& font);
 	void move(const DeltaTime dt);
 	void drag(const DeltaTime dt);
 }

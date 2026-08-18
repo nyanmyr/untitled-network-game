@@ -12,7 +12,7 @@ void PlayingScene(sf::RenderWindow& window, sf::Font& font) {
 	Entity loadedTextures = makeLoadedTexturesContainer();
 
 	// entity instantiation
-	Entity player = makePlayer
+	Entity player1 = makePlayer
 	(
 		ETexture::TEXTURE_PLACEHOLDER,
 		{
@@ -39,7 +39,67 @@ void PlayingScene(sf::RenderWindow& window, sf::Font& font) {
 			50.f,
 			50.f
 		},
+		sf::Color::Red
+	);
+
+	Entity player2 = makePlayer
+	(
+		ETexture::TEXTURE_PLACEHOLDER,
+		{
+			window.getSize().x / 2.f - 75.f,
+			window.getSize().y / 2.f
+		},
+		{
+			40.f,
+			40.f
+		},
+		{
+			-300.f,
+			-300.f
+		},
+		{
+			300.f,
+			300.f
+		},
+		{
+			500.f,
+			500.f
+		},
+		{
+			50.f,
+			50.f
+		},
 		sf::Color::Green
+	);
+
+	Entity player3 = makePlayer
+	(
+		ETexture::TEXTURE_PLACEHOLDER,
+		{
+			window.getSize().x / 2.f + 75.f,
+			window.getSize().y / 2.f
+		},
+		{
+			40.f,
+			40.f
+		},
+		{
+			-300.f,
+			-300.f
+		},
+		{
+			300.f,
+			300.f
+		},
+		{
+			500.f,
+			500.f
+		},
+		{
+			50.f,
+			50.f
+		},
+		sf::Color::Blue
 	);
 
 	// onstart systems
@@ -64,11 +124,11 @@ void PlayingScene(sf::RenderWindow& window, sf::Font& font) {
 		}
 
 		// systems
-		Control::doPlayerControl
-		(
-			player,
-			dt
-		);
+		//Control::doPlayerControl
+		//(
+		//	player,
+		//	dt
+		//);
 		Update::move(dt);
 		Update::drag(dt);
 
