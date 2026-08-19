@@ -7,20 +7,24 @@
 #include <stdexcept>
 
 enum Scene {
-	MENU,
 	PLAYING
 };
 
 void playScene
 (
+	bool& isHost,
 	sf::RenderWindow& window,
 	Scene scene,
 	sf::Font& font,
-	std::unordered_map<uint8_t,
-	std::unique_ptr<sf::TcpSocket>> connections
+	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
 );
-void MenuScene(sf::RenderWindow& window, sf::Font& font);
-void PlayingScene(sf::RenderWindow& window, sf::Font& font);
+void PlayingScene
+(
+	bool& isHost,
+	sf::RenderWindow& window,
+	sf::Font& font,
+	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+);
 
 
 #endif

@@ -29,7 +29,6 @@ enum class PacketType : uint8_t
 	PLAYER_STATE = 3
 };
 
-// TODO: delete menu scene
 // TODO: player controls
 // TOOD: borders
 // TODO: hearts display
@@ -190,5 +189,12 @@ void main()
 		throw std::runtime_error("Font not found.");
 	}
 
-	playScene(window, Scene::PLAYING, font, connections);
+	playScene
+	(
+		isHost,
+		window,
+		Scene::PLAYING,
+		font,
+		connections
+	);
 }

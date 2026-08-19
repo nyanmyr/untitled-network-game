@@ -50,7 +50,7 @@ struct CText
 
 struct CNextScene
 {
-	Scene next = Scene::MENU;
+	Scene next = Scene::PLAYING;
 	bool active = false;
 };
 

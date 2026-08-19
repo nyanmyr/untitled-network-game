@@ -2,7 +2,14 @@
 #include "../src/Game/Headers/GameManager.hpp"
 #include "../src/Game/Headers/Scenes.hpp"
 
-void PlayingScene(sf::RenderWindow& window, sf::Font& font) {
+void PlayingScene
+(
+	bool& isHost,
+	sf::RenderWindow& window,
+	sf::Font& font,
+	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+)
+{
 	NacreCoordinator& nc = NacreCoordinator::getInstance();
 
 	// game state variables
