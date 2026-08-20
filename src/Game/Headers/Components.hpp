@@ -118,4 +118,9 @@ struct CColor
 };
 
 
+struct CPlayerID
+{
+	uint8_t id = 0;
+};
+
 #endif

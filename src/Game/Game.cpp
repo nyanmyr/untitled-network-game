@@ -182,6 +182,7 @@ void main()
 	nc.registerComponent<CTexture>();
 	nc.registerComponent<CTexturesContainer>();
 	nc.registerComponent<CColor>();
+	nc.registerComponent<CPlayerID>();
 
 	sf::Font font;
 	if (!font.openFromFile(FONT_FILEPATH))

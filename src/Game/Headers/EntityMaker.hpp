@@ -7,6 +7,7 @@
 
 Entity makePlayer
 (
+	const uint8_t playerID,
 	const ETexture texture,
 	const sf::Vector2f pos,
 	const sf::Vector2f size,

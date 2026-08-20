@@ -21,6 +21,7 @@ void PlayingScene
 	// entity instantiation
 	Entity player1 = makePlayer
 	(
+		1,
 		ETexture::TEXTURE_PLACEHOLDER,
 		{
 			window.getSize().x / 2.f,
@@ -51,6 +52,7 @@ void PlayingScene
 
 	Entity player2 = makePlayer
 	(
+		2,
 		ETexture::TEXTURE_PLACEHOLDER,
 		{
 			window.getSize().x / 2.f - 75.f,
@@ -81,6 +83,7 @@ void PlayingScene
 
 	Entity player3 = makePlayer
 	(
+		3,
 		ETexture::TEXTURE_PLACEHOLDER,
 		{
 			window.getSize().x / 2.f + 75.f,
@@ -131,16 +134,22 @@ void PlayingScene
 
 			if (event->is<sf::Event::KeyPressed>())
 			{
-				//Control::doPlayerControl
-				//(
-				//	player,
-				//	dt
-				//);
+				Control::doPlayerControl
+				(
+					isHost,
+					connections,
+					dt
+				);
 			}
 		}
 
 		// systems
-		Update::move(dt);
+		Update::move
+		(
+			isHost,
+			connections,
+			dt
+		);
 		Update::drag(dt);
 
 		window.clear();

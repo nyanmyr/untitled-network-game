@@ -2,6 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+#include <algorithms>
+
 NacreCoordinator& systemsNC = NacreCoordinator::getInstance();
 
 // -------------------------------------------------------
@@ -210,72 +213,98 @@ void Control::buttonClicks
 }
 void Control::doPlayerControl
 (
-    const Entity player,
+    const bool isHost,
+    std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
     const DeltaTime dt
 )
 {
     auto& velocities = systemsNC.getComponentArray<CVelocity>();
     auto& speeds = systemsNC.getComponentArray<CSpeed>();
     auto& playerControllers = systemsNC.getComponentArray<CPlayerController>();
+    auto& playerIDArrays = systemsNC.getComponentArray<CPlayerID>();
 
-    if (!velocities->hasData(player) ||
-        !speeds->hasData(player) ||
-        !playerControllers->hasData(player))
+    if (isHost)
     {
-        return;
+        std::cout << "I am the host" << "\n";
     }
-
-    const CPlayerController playerController = playerControllers->getData(player);
-    const CSpeed speed = speeds->getData(player);
-    CVelocity& velocity = velocities->getData(player);
-
-    if (!playerController.enabled)
+    else 
     {
-        return;
-    }
+        //std::cout << "I am client" << "\n";
+        //std::cout << "PlayerID: " << std::to_string(connections.begin()->first) << "\n";
 
-    double newSpeedX = 0.f;
-    double newSpeedY = 0.f;
+        CSpeed speed
+        {
+            100.f,
+            100.f
+        };
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-    {
-        newSpeedY = -speed.y;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-    {
-        newSpeedY = speed.y;
-    }
+        double newSpeedX = 0.f;
+        double newSpeedY = 0.f;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-    {
-        newSpeedX = -speed.x;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-    {
-        newSpeedX = speed.x;
-    }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        {
+            newSpeedY = -speed.y;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        {
+            newSpeedY = speed.y;
+        }
 
-    // applies the speed (even if there aren't any changes)
-    velocity.x += (newSpeedX * dt);
-    velocity.y += (newSpeedY * dt);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+        {
+            newSpeedX = -speed.x;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+        {
+            newSpeedX = speed.x;
+        }
 
-    if (velocity.x > velocity.maxX)
-    {
-        velocity.x = velocity.maxX;
-    }
-    else if (velocity.x < velocity.minX)
-    {
-        velocity.x = velocity.minX;
+        //sf::Packet packet;
     }
 
-    if (velocity.y > velocity.maxY)
-    {
-        velocity.y = velocity.maxY;
-    }
-    else if (velocity.y < velocity.minY)
-    {
-        velocity.y = velocity.minY;
-    }
+    std::cout << "connections: " << connections.size() << "\n";
+
+    //if (!velocities->hasData(player) ||
+    //    !speeds->hasData(player) ||
+    //    !playerControllers->hasData(player))
+    //{
+    //    return;
+    //}
+
+    //const CPlayerController playerController = playerControllers->getData(player);
+    //const CSpeed speed = speeds->getData(player);
+    //CVelocity& velocity = velocities->getData(player);
+
+    //if (!playerController.enabled)
+    //{
+    //    return;
+    //}
+
+
+
+
+
+    //// applies the speed (even if there aren't any changes)
+    //velocity.x += (newSpeedX * dt);
+    //velocity.y += (newSpeedY * dt);
+
+    //if (velocity.x > velocity.maxX)
+    //{
+    //    velocity.x = velocity.maxX;
+    //}
+    //else if (velocity.x < velocity.minX)
+    //{
+    //    velocity.x = velocity.minX;
+    //}
+
+    //if (velocity.y > velocity.maxY)
+    //{
+    //    velocity.y = velocity.maxY;
+    //}
+    //else if (velocity.y < velocity.minY)
+    //{
+    //    velocity.y = velocity.minY;
+    //}
 
 }
 
@@ -417,7 +446,12 @@ void Update::doButtons
         }
     }
 }
-void Update::move(const DeltaTime dt)
+void Update::move
+(
+    const bool isHost,
+    std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
+    const DeltaTime dt
+)
 {
     auto& velocities = systemsNC.getComponentArray<CVelocity>();
     auto& positions = systemsNC.getComponentArray<CPosition>();

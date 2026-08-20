@@ -24,7 +24,8 @@ namespace Control
 	);
 	void doPlayerControl
 	(
-		const Entity player,
+		const bool isHost,
+		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
 		const DeltaTime dt
 	);
 }
@@ -36,7 +37,12 @@ namespace Update
 		const sf::Vector2i mouseVector,
 		const DeltaTime dt
 	);
-	void move(const DeltaTime dt);
+	void move
+	(
+		const bool isHost,
+		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
+		const DeltaTime dt
+	);
 	void drag(const DeltaTime dt);
 }
 
