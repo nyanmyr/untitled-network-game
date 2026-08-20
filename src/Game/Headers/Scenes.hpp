@@ -12,7 +12,7 @@ enum Scene {
 
 void playScene
 (
-	bool& isHost,
+	const bool isHost,
 	sf::RenderWindow& window,
 	Scene scene,
 	sf::Font& font,
@@ -20,7 +20,7 @@ void playScene
 );
 void PlayingScene
 (
-	bool& isHost,
+	const bool isHost,
 	sf::RenderWindow& window,
 	sf::Font& font,
 	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections

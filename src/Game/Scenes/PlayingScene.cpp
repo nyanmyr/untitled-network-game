@@ -4,7 +4,7 @@
 
 void PlayingScene
 (
-	bool& isHost,
+	const bool isHost,
 	sf::RenderWindow& window,
 	sf::Font& font,
 	std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
@@ -128,14 +128,18 @@ void PlayingScene
 			{
 				window.close();
 			}
+
+			if (event->is<sf::Event::KeyPressed>())
+			{
+				//Control::doPlayerControl
+				//(
+				//	player,
+				//	dt
+				//);
+			}
 		}
 
 		// systems
-		//Control::doPlayerControl
-		//(
-		//	player,
-		//	dt
-		//);
 		Update::move(dt);
 		Update::drag(dt);
 

@@ -3,7 +3,7 @@
 
 void playScene
 (
-    bool& isHost,
+    const bool isHost,
     sf::RenderWindow& window,
     Scene scene,
     sf::Font& font,
