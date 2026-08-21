@@ -24,6 +24,7 @@ namespace Control
 	);
 	void doPlayerControl
 	(
+		sf::Packet& playerControlPacket,
 		const bool isHost,
 		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
 		const DeltaTime dt
@@ -39,6 +40,7 @@ namespace Update
 	);
 	void move
 	(
+		sf::Packet& playerControlPacket,
 		const bool isHost,
 		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
 		const DeltaTime dt

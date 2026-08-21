@@ -121,6 +121,8 @@ void PlayingScene
 	Start::setSpriteOrigin();
 	Start::setColor();
 
+	sf::Packet playerControlPacket;
+
 	while (window.isOpen())
 	{
 		DeltaTime dt = clock.restart().asSeconds();
@@ -136,6 +138,7 @@ void PlayingScene
 			{
 				Control::doPlayerControl
 				(
+					playerControlPacket,
 					isHost,
 					connections,
 					dt
@@ -146,6 +149,7 @@ void PlayingScene
 		// systems
 		Update::move
 		(
+			playerControlPacket,
 			isHost,
 			connections,
 			dt

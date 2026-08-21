@@ -3,7 +3,27 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
-#include <algorithms>
+#include <algorithm>
+
+// temporary place
+// TODO: move elsewhere
+
+struct PMovement
+{
+    double newSpeedX = 0.0;
+    double newSpeedY = 0.0;
+    uint8_t id = 0;
+};
+
+sf::Packet& operator<<(sf::Packet& packet, const PMovement& data)
+{
+    return packet << data.newSpeedX << data.newSpeedY << data.id;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, PMovement& data)
+{
+    return packet >> data.newSpeedX >> data.newSpeedY >> data.id;
+}
 
 NacreCoordinator& systemsNC = NacreCoordinator::getInstance();
 
@@ -213,6 +233,7 @@ void Control::buttonClicks
 }
 void Control::doPlayerControl
 (
+    sf::Packet& playerControlPacket,
     const bool isHost,
     std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
     const DeltaTime dt
@@ -259,7 +280,15 @@ void Control::doPlayerControl
             newSpeedX = speed.x;
         }
 
-        //sf::Packet packet;
+        const PMovement movementObj = PMovement
+        {
+            newSpeedX,
+            newSpeedY,
+            connections.begin()->first
+        };
+
+        playerControlPacket << movementObj;
+        (void)connections.begin()->second->send(playerControlPacket);
     }
 
     std::cout << "connections: " << connections.size() << "\n";
@@ -279,10 +308,6 @@ void Control::doPlayerControl
     //{
     //    return;
     //}
-
-
-
-
 
     //// applies the speed (even if there aren't any changes)
     //velocity.x += (newSpeedX * dt);
@@ -448,11 +473,35 @@ void Update::doButtons
 }
 void Update::move
 (
+    sf::Packet& playerControlPacket,
     const bool isHost,
     std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
     const DeltaTime dt
 )
 {
+    if (isHost)
+    {
+        for (auto& [id, socket] : connections)
+        {
+            if (socket->receive(playerControlPacket) != sf::Socket::Status::Done)
+            {
+                continue;
+            }
+
+            PMovement movementObj{};
+
+            playerControlPacket >> movementObj;
+
+            std::cout << "packet received from: " << std::to_string(movementObj.id) << "\n";
+        }
+    }
+    else
+    {
+
+    }
+
+    return;
+
     auto& velocities = systemsNC.getComponentArray<CVelocity>();
     auto& positions = systemsNC.getComponentArray<CPosition>();
 
