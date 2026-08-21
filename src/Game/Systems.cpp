@@ -1,4 +1,5 @@
 #include "Headers/Systems.hpp"
+#include "Headers/Packets.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -7,23 +8,6 @@
 
 // temporary place
 // TODO: move elsewhere
-
-struct PMovement
-{
-    double newSpeedX = 0.0;
-    double newSpeedY = 0.0;
-    uint8_t id = 0;
-};
-
-sf::Packet& operator<<(sf::Packet& packet, const PMovement& data)
-{
-    return packet << data.newSpeedX << data.newSpeedY << data.id;
-}
-
-sf::Packet& operator>>(sf::Packet& packet, PMovement& data)
-{
-    return packet >> data.newSpeedX >> data.newSpeedY >> data.id;
-}
 
 NacreCoordinator& systemsNC = NacreCoordinator::getInstance();
 
