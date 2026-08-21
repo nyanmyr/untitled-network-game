@@ -177,6 +177,31 @@ void Start::setColor()
         spriteObj.body->setColor(colorObj.col);
     }
 }
+void Start::getPlayerEntity
+(
+    const int8_t playerID,
+    Entity& playerEntity
+)
+{
+    auto& playerIDArrays = systemsNC.getComponentArray<CPlayerID>();
+
+    auto it = std::find_if
+    (
+        playerIDArrays->getAll().begin(),
+        playerIDArrays->getAll().end(),
+        [playerID](std::pair<const Entity, CPlayerID> playerIDObj)
+        {
+            return playerIDObj.second.id == playerID;
+        }
+    );
+
+    if (it == playerIDArrays->getAll().end())
+    {
+        return;
+    }
+
+    playerEntity = it->first;
+}
 
 // -------------------------------------------------------
 // control systems
@@ -230,107 +255,6 @@ void Control::buttonClicks
             button.clickedTimer = button.clickedDuration;
         }
     }
-}
-void Control::doPlayerControl
-(
-    sf::Packet& playerControlPacket,
-    const bool isHost,
-    std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
-    const DeltaTime dt
-)
-{
-    auto& velocities = systemsNC.getComponentArray<CVelocity>();
-    auto& speeds = systemsNC.getComponentArray<CSpeed>();
-    auto& playerControllers = systemsNC.getComponentArray<CPlayerController>();
-    auto& playerIDArrays = systemsNC.getComponentArray<CPlayerID>();
-
-    if (isHost)
-    {
-        std::cout << "I am the host" << "\n";
-    }
-    else 
-    {
-        //std::cout << "I am client" << "\n";
-        //std::cout << "PlayerID: " << std::to_string(connections.begin()->first) << "\n";
-
-        CSpeed speed
-        {
-            100.f,
-            100.f
-        };
-
-        double newSpeedX = 0.f;
-        double newSpeedY = 0.f;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-        {
-            newSpeedY = -speed.y;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-        {
-            newSpeedY = speed.y;
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-        {
-            newSpeedX = -speed.x;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        {
-            newSpeedX = speed.x;
-        }
-
-        const PMovement movementObj = PMovement
-        {
-            newSpeedX,
-            newSpeedY,
-            connections.begin()->first
-        };
-
-        playerControlPacket << movementObj;
-        (void)connections.begin()->second->send(playerControlPacket);
-    }
-
-    std::cout << "connections: " << connections.size() << "\n";
-
-    //if (!velocities->hasData(player) ||
-    //    !speeds->hasData(player) ||
-    //    !playerControllers->hasData(player))
-    //{
-    //    return;
-    //}
-
-    //const CPlayerController playerController = playerControllers->getData(player);
-    //const CSpeed speed = speeds->getData(player);
-    //CVelocity& velocity = velocities->getData(player);
-
-    //if (!playerController.enabled)
-    //{
-    //    return;
-    //}
-
-    //// applies the speed (even if there aren't any changes)
-    //velocity.x += (newSpeedX * dt);
-    //velocity.y += (newSpeedY * dt);
-
-    //if (velocity.x > velocity.maxX)
-    //{
-    //    velocity.x = velocity.maxX;
-    //}
-    //else if (velocity.x < velocity.minX)
-    //{
-    //    velocity.x = velocity.minX;
-    //}
-
-    //if (velocity.y > velocity.maxY)
-    //{
-    //    velocity.y = velocity.maxY;
-    //}
-    //else if (velocity.y < velocity.minY)
-    //{
-    //    velocity.y = velocity.minY;
-    //}
-
 }
 
 // -------------------------------------------------------
@@ -471,37 +395,8 @@ void Update::doButtons
         }
     }
 }
-void Update::move
-(
-    sf::Packet& playerControlPacket,
-    const bool isHost,
-    std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
-    const DeltaTime dt
-)
+void Update::move(const DeltaTime dt)
 {
-    if (isHost)
-    {
-        for (auto& [id, socket] : connections)
-        {
-            if (socket->receive(playerControlPacket) != sf::Socket::Status::Done)
-            {
-                continue;
-            }
-
-            PMovement movementObj{};
-
-            playerControlPacket >> movementObj;
-
-            std::cout << "packet received from: " << std::to_string(movementObj.id) << "\n";
-        }
-    }
-    else
-    {
-
-    }
-
-    return;
-
     auto& velocities = systemsNC.getComponentArray<CVelocity>();
     auto& positions = systemsNC.getComponentArray<CPosition>();
 

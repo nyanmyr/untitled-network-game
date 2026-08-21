@@ -33,9 +33,9 @@ struct COrigin
 
 struct CButton
 {
-	double clickedDuration = 0.f;
+	double clickedDuration = 0.0;
 	double enabled = true;
-	double clickedTimer = 0.f;
+	double clickedTimer = 0.0;
 	bool clicked = false;
 };
 
@@ -62,18 +62,18 @@ struct CZIndex
 
 struct CVelocity
 {
-	double minX = 0.f;
-	double minY = 0.f;
-	double maxX = 0.f;
-	double maxY = 0.f;
-	double x = 0.f;
-	double y = 0.f;
+	double minX = 0.0;
+	double minY = 0.0;
+	double maxX = 0.0;
+	double maxY = 0.0;
+	double x = 0.0;
+	double y = 0.0;
 };
 
 struct CSpeed
 {
-	double x = 0.f;
-	double y = 0.f;
+	double x = 0.0;
+	double y = 0.0;
 };
 
 struct CPlayerController
@@ -83,8 +83,8 @@ struct CPlayerController
 
 struct CDrag
 {
-	double x = 0.f;
-	double y = 0.f;
+	double x = 0.0;
+	double y = 0.0;
 };
 
 struct CSprite

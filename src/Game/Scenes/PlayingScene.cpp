@@ -121,7 +121,17 @@ void PlayingScene
 	Start::setSpriteOrigin();
 	Start::setColor();
 
-	sf::Packet playerControlPacket;
+	sf::Packet playerControl;
+	sf::Packet applySpeed;
+
+	const uint8_t playerID = isHost ? 1 : connections.begin()->first;
+	Entity playerEntity;
+
+	Start::getPlayerEntity
+	(
+		playerID,
+		playerEntity
+	);
 
 	while (window.isOpen())
 	{
@@ -136,24 +146,11 @@ void PlayingScene
 
 			if (event->is<sf::Event::KeyPressed>())
 			{
-				Control::doPlayerControl
-				(
-					playerControlPacket,
-					isHost,
-					connections,
-					dt
-				);
 			}
 		}
 
 		// systems
-		Update::move
-		(
-			playerControlPacket,
-			isHost,
-			connections,
-			dt
-		);
+		Update::move(dt);
 		Update::drag(dt);
 
 		window.clear();

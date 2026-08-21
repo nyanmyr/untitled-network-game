@@ -13,6 +13,11 @@ namespace Start
 	void loadTextures(Entity loadedTextures);
 	void loadSprites(Entity loadedTextures);
 	void setColor();
+	void getPlayerEntity
+	(
+		const int8_t playerID,
+		Entity& playerEntity
+	);
 }
 
 namespace Control
@@ -20,13 +25,6 @@ namespace Control
 	void buttonClicks
 	(
 		const sf::Vector2i mouseVector,
-		const DeltaTime dt
-	);
-	void doPlayerControl
-	(
-		sf::Packet& playerControlPacket,
-		const bool isHost,
-		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
 		const DeltaTime dt
 	);
 }
@@ -38,13 +36,7 @@ namespace Update
 		const sf::Vector2i mouseVector,
 		const DeltaTime dt
 	);
-	void move
-	(
-		sf::Packet& playerControlPacket,
-		const bool isHost,
-		std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections,
-		const DeltaTime dt
-	);
+	void move(const DeltaTime dt);
 	void drag(const DeltaTime dt);
 }
 
