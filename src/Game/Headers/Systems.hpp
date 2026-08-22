@@ -22,6 +22,15 @@ namespace Start
 
 namespace Control
 {
+	void doPlayerControl
+	(
+		sf::Packet& playerControl,
+		const bool isHost,
+		const Entity playerEntity,
+		const uint8_t playerID,
+		const DeltaTime dt,
+		const std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+	);
 	void buttonClicks
 	(
 		const sf::Vector2i mouseVector,
@@ -31,6 +40,15 @@ namespace Control
 
 namespace Update
 {
+	void applySpeed
+	(
+		sf::Packet& playerControl,
+		sf::Packet& applySpeed,
+		const bool isHost,
+		const Entity playerEntity,
+		const uint8_t playerID,
+		const std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+	);
 	void doButtons
 	(
 		const sf::Vector2i mouseVector,

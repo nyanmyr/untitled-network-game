@@ -3,21 +3,22 @@
 
 #include <SFML/Network.hpp>
 
-struct PMovement
+struct PNewSpeed
 {
-    double newSpeedX = 0.0;
-    double newSpeedY = 0.0;
+    double x = 0.0;
+    double y = 0.0;
     uint8_t id = 0;
+    DeltaTime dt = 0;
 };
 
-sf::Packet& operator<<(sf::Packet& packet, const PMovement& data)
+sf::Packet& operator<<(sf::Packet& packet, const PNewSpeed& data)
 {
-    return packet << data.newSpeedX << data.newSpeedY << data.id;
+    return packet << data.x << data.y << data.id << data.dt;
 }
 
-sf::Packet& operator>>(sf::Packet& packet, PMovement& data)
+sf::Packet& operator>>(sf::Packet& packet, PNewSpeed& data)
 {
-    return packet >> data.newSpeedX >> data.newSpeedY >> data.id;
+    return packet >> data.x >> data.y >> data.id >> data.dt;
 }
 
 #endif

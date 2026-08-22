@@ -199,6 +199,61 @@ const double HOVER_SCALE_Y = 1.1f;
 const double CLICKED_SCALE_X = 0.9f;
 const double CLICKED_SCALE_Y = 0.9f;
 
+void Control::doPlayerControl
+(
+    sf::Packet& playerControl,
+    const bool isHost,
+    const Entity playerEntity,
+    const uint8_t playerID,
+    const DeltaTime dt,
+    const std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+)
+{
+    auto& speedArray = systemsNC.getComponentArray<CSpeed>();
+
+    if (!speedArray->hasData(playerEntity))
+    {
+        return;
+    }
+
+    const CSpeed speed = speedArray->getData(playerEntity);
+
+
+    if (isHost)
+    {
+
+    }
+    else
+    {
+        std::cout << "test" << "\n";
+
+        PNewSpeed movement{};
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        {
+            movement.y = -speed.y;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        {
+            movement.y = speed.y;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+        {
+            movement.x = -speed.x;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+        {
+            movement.x = speed.x;
+        }
+
+        movement.id = playerID;
+        movement.dt = dt;
+
+        playerControl << movement;
+        (void)connections.begin()->second->send(playerControl);
+    }
+}
 void Control::buttonClicks
 (
     const sf::Vector2i mouseVector,
@@ -244,6 +299,47 @@ void Control::buttonClicks
 // -------------------------------------------------------
 // update systems
 // -------------------------------------------------------
+void Update::applySpeed
+(
+    sf::Packet& playerControl,
+    sf::Packet& applySpeed,
+    const bool isHost,
+    const Entity playerEntity,
+    const uint8_t playerID,
+    const std::unordered_map<uint8_t, std::unique_ptr<sf::TcpSocket>>& connections
+)
+{
+    if (isHost)
+    {
+        bool hasReceived = false;
+
+        for (auto& [id, socket] : connections)
+        {
+            if (socket->receive(playerControl) == sf::Socket::Status::Done)
+            {
+                hasReceived = true;
+                break;
+            }
+        }
+
+        if (!hasReceived)
+        {
+            return;
+        }
+
+        for (auto& [id, socket] : connections)
+        {
+            if (socket->receive(playerControl) != sf::Socket::Status::Done)
+            {
+                continue;
+            }
+
+            std::cout << "Has received!" << "\n";
+            std::cout << "From User: " << std::to_string(id) << "\n";
+        }
+
+    }
+}
 void Update::doButtons
 (
     const sf::Vector2i mouseVector,

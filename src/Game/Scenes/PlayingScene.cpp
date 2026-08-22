@@ -146,10 +146,28 @@ void PlayingScene
 
 			if (event->is<sf::Event::KeyPressed>())
 			{
+				Control::doPlayerControl
+				(
+					playerControl,
+					isHost,
+					playerEntity,
+					playerID,
+					dt,
+					connections
+				);
 			}
 		}
 
 		// systems
+		Update::applySpeed
+		(
+			playerControl,
+			applySpeed,
+			isHost,
+			playerEntity,
+			playerID,
+			connections
+		);
 		Update::move(dt);
 		Update::drag(dt);
 
